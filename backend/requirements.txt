@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]==0.22.0
+llama-index
+openai
+pydantic-settings

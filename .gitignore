@@ -1,0 +1,22 @@
+# IDE and OS specific files
+**/.idea/
+**/.vscode/
+.DS_Store
+Thumbs.db
+
+# Frontend (Angular) specific files
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/*.js.map
+
+# Backend (FastAPI) specific files
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/venv/
+venv/
+backend/env/
+**/__pycache__/
+backend/app/*.db
