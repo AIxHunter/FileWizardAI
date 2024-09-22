@@ -1,8 +1,8 @@
-# FileWizardAi
+# FileWizardAI
 
 ## Description
 
-FileWizardAi is a Python/Angular project designed to automatically organize your files into a well-structured directory
+FileWizardAI is a Python/Angular project designed to automatically organize your files into a well-structured directory
 hierarchy and rename them according to their content. This tool is ideal for anyone looking to declutter their digital
 workspace by sorting files into appropriate folders and providing descriptive names, making it easier to manage and
 locate files. Additionally, it allows you to input a text prompt and instantly searches for files that are related to
@@ -66,7 +66,7 @@ Make sure you have Python installed on your machine.
 First, clone the repository:
 
 ```bash
-git clone https://github.com/AIxHunter/FileWizardAi.git
+git clone https://github.com/AIxHunter/FileWizardAI.git
 ```
 
 Navigate to the backend folder and update your `.env` file according to the [documentation](.env.md). Then, install the

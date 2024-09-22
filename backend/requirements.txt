@@ -1,5 +1,10 @@
 fastapi
 uvicorn[standard]==0.22.0
-llama-index
 openai
 pydantic-settings
+llama-index
+# needed by llama index
+git+https://github.com/openai/whisper.git
+pydub
+docx2txt
+nbconvert

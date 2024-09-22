@@ -19,4 +19,4 @@ backend/venv/
 venv/
 backend/env/
 **/__pycache__/
-backend/app/*.db
+backend/**/*.db

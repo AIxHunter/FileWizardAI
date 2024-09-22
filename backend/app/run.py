@@ -74,6 +74,7 @@ def load_documents(path: str, recursive: bool, required_exts: list):
         input_dir=path,
         recursive=recursive,
         required_exts=required_exts,
+        errors='ignore'
     )
     splitter = TokenTextSplitter(chunk_size=6144)
     documents = []

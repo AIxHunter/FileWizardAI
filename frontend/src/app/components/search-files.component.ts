@@ -13,7 +13,7 @@ import { DataService } from "../data.service";
     <div class="spinner-container">
         <mat-spinner *ngIf="isLoading"></mat-spinner>
     </div>
-    <app-folder-tree title="Searched files" *ngIf="files" [paths]="files" [index]=2></app-folder-tree>
+    <app-folder-tree title="Searched files" *ngIf="files" [paths]="files" [rootPath]="rootPath" [index]=2></app-folder-tree>
   `,
   styles: [`
     .example-full-width {

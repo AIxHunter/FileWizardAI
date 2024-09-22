@@ -2,19 +2,29 @@ import { Component, HostBinding, Input, QueryList, ViewChildren } from '@angular
 import { DataService } from './data.service';
 import { HttpParams } from "@angular/common/http";
 import { FolderTreeComponent } from './components/folder-tree.component';
+import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   template: `
       <mat-card class="example-card" appearance="raised">
-          <mat-card-content>
-              <mat-card-header>
-                  <mat-card-title>Update structure</mat-card-title>
-              </mat-card-header>
+
+        <mat-card-header>
+            <mat-card-title>Update structure</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
               <mat-form-field style="margin-right: 1%; width: 33%;" appearance="fill">
                   <mat-label>Root path</mat-label>
                   <input matInput placeholder="Path" [(ngModel)]="rootPath" (ngModelChange)="onPathChange($event)">
               </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Add new extension</mat-label>
+                    <input matInput placeholder="Add Extension" [(ngModel)]="newExtension" #extensionControl="ngModel">
+                    <mat-error >Extension should start with a dot ".", ex: '.txt'</mat-error>
+                </mat-form-field>
+                <button style="margin-right: 1%" mat-raised-button (click)="addExtension(extensionControl)">Add</button>
 
               <mat-form-field appearance="fill">
                   <mat-label>Extensions</mat-label>
@@ -82,9 +92,10 @@ export class AppComponent {
   successMessage: string = '';
   errorMessage: string = '';
   isLoading: boolean = false;
+  newExtension: string = '';
 
-  filesExts: string[] = ['.pdf', '.txt', '.png', '.jpg', '.jpeg'];
-  filesExtsList: string[] = ['.pdf', '.txt', '.png', '.jpg', '.jpeg'];
+  filesExts: string[] = [".csv", ".docx", ".ipynb", ".jpeg", ".jpg", ".md", ".mp3", ".mp4", ".pdf", ".png", ".ppt"];
+  filesExtsList: string[] = [".csv", ".docx", ".ipynb", ".jpeg", ".jpg", ".md", ".mp3", ".mp4", ".pdf", ".png", ".ppt"];
   @HostBinding('class.active')
   @Input()
   selectedOptions: string[] = [];
@@ -106,7 +117,7 @@ export class AppComponent {
     params = params.set("required_exts", this.filesExts.join(';'))
     this.dataService.getFormattedFiles(params).subscribe((data) => {
       this.original_files = data
-      this.original_files.items = this.original_files.items.map((item: any) => ({src_path: item.src_path.replaceAll("\\\\", "/").replaceAll("\\", "/"), dst_path: item.dst_path}))
+      this.original_files.items = this.original_files.items.map((item: any) => ({ src_path: item.src_path.replaceAll("\\\\", "/").replaceAll("\\", "/"), dst_path: item.dst_path }))
       let res = this.original_files.items.map((item: any) => ({ src_path: `${data.root_path}/${item.src_path}`, dst_path: `${data.root_path}/${item.dst_path}` }))
       this.srcPaths = res.map((r: any) => r.src_path);
       this.dstPaths = res.map((r: any) => r.dst_path);
@@ -134,6 +145,18 @@ export class AppComponent {
     else
       matchingFilePath = root_path + "/" + this.original_files.items.find((file: any) => root_path + "/" + file.dst_path === path)?.src_path;
     this.childComponents.toArray()[index].highlightFile(matchingFilePath);
+  }
+
+  addExtension(extensionControl: NgModel) {
+    if (this.newExtension && !this.filesExtsList.includes(this.newExtension)) {
+      if (this.newExtension.startsWith(".")) {
+        this.filesExtsList.push(this.newExtension);  // Add new option
+        this.filesExts.push(this.newExtension);  // Add new option
+        this.newExtension = '';  // Clear the input field
+      } else {
+        extensionControl.control.setErrors({ customError: true });
+      }
+    }
   }
 
 }
