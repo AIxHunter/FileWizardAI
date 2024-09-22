@@ -5,6 +5,7 @@ from llama_index.core.node_parser import TokenTextSplitter
 import os
 import logging
 from pathlib import Path
+import hashlib
 
 from .database import SQLiteDB
 from .settings import CustomFormatter
@@ -23,11 +24,12 @@ db = SQLiteDB()
 
 async def summarize_document(doc: Document):
     logger.info(f"Processing file {doc.metadata['file_path']}")
-    if db.is_file_exist(doc.metadata['file_path'], doc.hash):
+    doc_hash = get_file_hash(doc.metadata['file_path'])
+    if db.is_file_exist(doc.metadata['file_path'], doc_hash):
         summary = db.get_file_summary(doc.metadata['file_path'])
     else:
         summary = await model.summarize_document_api(doc.text)
-        db.insert_file_summary(doc.metadata['file_path'], doc.hash, summary)
+        db.insert_file_summary(doc.metadata['file_path'], doc_hash, summary)
     return {
         "file_path": doc.metadata['file_path'],
         "summary": summary
@@ -36,11 +38,12 @@ async def summarize_document(doc: Document):
 
 async def summarize_image_document(doc: ImageDocument):
     logger.info(f"Processing image {doc.image_path}")
-    if db.is_file_exist(doc.image_path, doc.hash):
+    image_hash = get_file_hash(doc.image_path)
+    if db.is_file_exist(doc.image_path, image_hash):
         summary = db.get_file_summary(doc.image_path)
     else:
         summary = await model.summarize_image_api(image_path=doc.image_path)
-        db.insert_file_summary(doc.image_path, doc.hash, summary)
+        db.insert_file_summary(doc.image_path, image_hash, summary)
     return {
         "file_path": doc.image_path,
         "summary": summary
@@ -129,7 +132,7 @@ def update_file(root_path, item):
         os.makedirs(dst_dir)
     if os.path.isfile(src_file):
         shutil.move(src_file, dst_file)
-        new_hash = SimpleDirectoryReader(input_files=[dst_file]).load_data()[0].hash
+        new_hash = get_file_hash(dst_file)
         db.update_file(src_file, dst_file, new_hash)
 
 
@@ -137,3 +140,11 @@ async def search_files(root_path: str, recursive: bool, required_exts: list, sea
     summaries = await get_dir_summaries(root_path, recursive, required_exts)
     files = await model.search_files_api(summaries, search_query)
     return files
+
+
+def get_file_hash(file_path):
+    hash_func = hashlib.new('sha256')
+    with open(file_path, 'rb') as f:
+        while chunk := f.read(8192):
+            hash_func.update(chunk)
+    return hash_func.hexdigest()

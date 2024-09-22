@@ -4,7 +4,7 @@ openai
 pydantic-settings
 llama-index
 # needed by llama index
-git+https://github.com/openai/whisper.git
+git+https://github.com/openai/whisper.git # heavy library, remove if you don't want to treat media files
 pydub
 docx2txt
 nbconvert
