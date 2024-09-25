@@ -91,7 +91,7 @@ App will be running under: http://localhost:8000/
 
 ## Run in Development Mode
 
-If you are a developper and you want to modify the frontend, you can run the frontend and backend separately, here is
+If you are a developer and you want to modify the frontend, you can run the frontend and backend separately, here is
 how to do it:
 Install Node.js https://nodejs.org/
 
